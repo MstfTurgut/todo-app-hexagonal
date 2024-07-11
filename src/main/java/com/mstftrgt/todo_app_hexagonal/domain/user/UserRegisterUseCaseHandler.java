@@ -16,15 +16,14 @@ public class UserRegisterUseCaseHandler implements UseCaseHandler<User, UserRegi
 
     @Override
     public User handle(UserRegister useCase) {
-
-        boolean isUsernameUnique = userPort.isUsernameUnique(useCase.getUsername());
-
-        validateUsernameUniquenessOrElseThrow(isUsernameUnique, useCase.getUsername());
+        validateUsernameUniquenessOrElseThrow(useCase.getUsername());
 
         return userPort.create(useCase);
     }
 
-    private void validateUsernameUniquenessOrElseThrow(boolean isUsernameUnique, String username) {
+    private void validateUsernameUniquenessOrElseThrow(String username) {
+        boolean isUsernameUnique = userPort.isUsernameUnique(username);
+
         if(!isUsernameUnique) {
             throw new UsernameAlreadyInUseException(username);
         }
