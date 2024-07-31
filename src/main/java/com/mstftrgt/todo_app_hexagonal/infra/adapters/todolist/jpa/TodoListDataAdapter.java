@@ -47,9 +47,9 @@ public class TodoListDataAdapter implements TodoListPort {
     }
 
     @Override
-    public TodoList retrieveAndValidate(String todoListId) {
+    public TodoList retrieve(String todoListId, String userId) {
         return todoListRepository
-                .findById(todoListId)
+                .findByIdAndUserId(todoListId, userId)
                 .orElseThrow(() -> new TodoListNotFoundException(todoListId))
                 .toModel();
     }

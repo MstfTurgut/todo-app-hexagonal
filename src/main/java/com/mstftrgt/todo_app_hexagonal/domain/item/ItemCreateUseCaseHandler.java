@@ -4,9 +4,7 @@ import com.mstftrgt.todo_app_hexagonal.domain.common.usecase.UseCaseHandler;
 import com.mstftrgt.todo_app_hexagonal.domain.item.model.Item;
 import com.mstftrgt.todo_app_hexagonal.domain.item.port.ItemPort;
 import com.mstftrgt.todo_app_hexagonal.domain.item.usecase.ItemCreate;
-import com.mstftrgt.todo_app_hexagonal.domain.todolist.model.TodoList;
 import com.mstftrgt.todo_app_hexagonal.domain.todolist.port.TodoListPort;
-import com.mstftrgt.todo_app_hexagonal.domain.todolist.service.TodoListOwnershipValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,20 +14,10 @@ public class ItemCreateUseCaseHandler implements UseCaseHandler<Item, ItemCreate
 
     private final ItemPort itemPort;
     private final TodoListPort todoListPort;
-    private final TodoListOwnershipValidator todoListOwnershipValidator;
 
     @Override
     public Item handle(ItemCreate useCase) {
-        validateTodoListExistsAndBelongsToCurrentUser(useCase);
-
+        todoListPort.retrieve(useCase.getTodoListId(), useCase.getCurrentUserId());
         return itemPort.create(useCase);
     }
-
-    private void validateTodoListExistsAndBelongsToCurrentUser(ItemCreate useCase) {
-        TodoList todoList = todoListPort.retrieveAndValidate(useCase.getTodoListId());
-
-        todoListOwnershipValidator
-                .validateTodoListBelongsToCurrentUserOrElseThrow(todoList, useCase.getCurrentUserId());
-    }
-
 }

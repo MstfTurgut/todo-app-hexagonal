@@ -8,7 +8,7 @@ import com.mstftrgt.todo_app_hexagonal.domain.dependency.usecase.DependencyCreat
 import com.mstftrgt.todo_app_hexagonal.domain.item.exception.CannotCreateDependencyBetweenUncommonItemsException;
 import com.mstftrgt.todo_app_hexagonal.domain.item.model.Item;
 import com.mstftrgt.todo_app_hexagonal.domain.item.port.ItemPort;
-import com.mstftrgt.todo_app_hexagonal.domain.item.service.ItemOwnershipValidator;
+import com.mstftrgt.todo_app_hexagonal.domain.todolist.port.TodoListPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +19,8 @@ import java.util.Optional;
 public class DependencyCreateUseCaseHandler implements UseCaseHandler<Dependency, DependencyCreate> {
 
     private final ItemPort itemPort;
+    private final TodoListPort todoListPort;
     private final DependencyPort dependencyPort;
-    private final ItemOwnershipValidator itemOwnershipValidator;
 
     @Override
     public Dependency handle(DependencyCreate useCase) {
@@ -37,8 +37,8 @@ public class DependencyCreateUseCaseHandler implements UseCaseHandler<Dependency
     }
 
     private void validateBothItemsBelongToCurrentUser(DependencyCreate useCase, Item item, Item dependentItem) {
-        itemOwnershipValidator.validateItemBelongsToCurrentUserOrElseThrow(item, useCase.getCurrentUserId());
-        itemOwnershipValidator.validateItemBelongsToCurrentUserOrElseThrow(dependentItem, useCase.getCurrentUserId());
+        todoListPort.retrieve(item.getTodoListId(), useCase.getCurrentUserId());
+        todoListPort.retrieve(dependentItem.getTodoListId(), useCase.getCurrentUserId());
     }
 
     private void validateItemsAreInTheSameList(Item item, Item dependentItem) {

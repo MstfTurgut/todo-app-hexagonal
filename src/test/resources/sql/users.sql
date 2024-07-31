@@ -1,0 +1,1 @@
+insert into users(id, username, password) values('testId', 'testUsername', '$2a$12$U0MHUBw3lPnewsKBikCjMudXPhjoi43OQhDC5VrNF3aRm7pLbq62i');

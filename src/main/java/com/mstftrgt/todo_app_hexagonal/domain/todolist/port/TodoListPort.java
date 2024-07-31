@@ -12,7 +12,7 @@ public interface TodoListPort {
 
     TodoList create(TodoListCreate todoListCreate);
 
-    TodoList retrieveAndValidate(String todoListId);
+    TodoList retrieve(String todoListId, String userId);
 
     boolean isTodoListNameByUserUnique(TodoListCreate todoListCreate);
 

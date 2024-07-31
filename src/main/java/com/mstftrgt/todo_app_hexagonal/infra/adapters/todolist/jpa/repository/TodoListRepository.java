@@ -10,5 +10,7 @@ public interface TodoListRepository extends JpaRepository<TodoListEntity, String
 
     List<TodoListEntity> findByUserId(String userId);
 
+    Optional<TodoListEntity> findByIdAndUserId(String id, String userId);
+
     Optional<TodoListEntity> findByNameAndUserId(String name, String userId);
 }

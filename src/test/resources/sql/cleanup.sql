@@ -1,0 +1,1 @@
+truncate table dependencies, items, todo_lists, users;

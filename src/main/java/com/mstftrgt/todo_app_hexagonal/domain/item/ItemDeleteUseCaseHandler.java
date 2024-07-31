@@ -4,8 +4,8 @@ import com.mstftrgt.todo_app_hexagonal.domain.common.usecase.VoidUseCaseHandler;
 import com.mstftrgt.todo_app_hexagonal.domain.dependency.port.DependencyPort;
 import com.mstftrgt.todo_app_hexagonal.domain.item.model.Item;
 import com.mstftrgt.todo_app_hexagonal.domain.item.port.ItemPort;
-import com.mstftrgt.todo_app_hexagonal.domain.item.service.ItemOwnershipValidator;
 import com.mstftrgt.todo_app_hexagonal.domain.item.usecase.ItemDelete;
+import com.mstftrgt.todo_app_hexagonal.domain.todolist.port.TodoListPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ public class ItemDeleteUseCaseHandler implements VoidUseCaseHandler<ItemDelete> 
 
     private final ItemPort itemPort;
     private final DependencyPort dependencyPort;
-    private final ItemOwnershipValidator itemOwnershipValidator;
+    private final TodoListPort todoListPort;
 
     @Override
     @Transactional
@@ -30,8 +30,6 @@ public class ItemDeleteUseCaseHandler implements VoidUseCaseHandler<ItemDelete> 
 
     private void validateItemExistsAndBelongsToCurrentUser(ItemDelete useCase) {
         Item item = itemPort.retrieveAndValidate(useCase.getItemId());
-
-        itemOwnershipValidator
-                .validateItemBelongsToCurrentUserOrElseThrow(item, useCase.getCurrentUserId());
+        todoListPort.retrieve(item.getTodoListId(), useCase.getCurrentUserId());
     }
 }
